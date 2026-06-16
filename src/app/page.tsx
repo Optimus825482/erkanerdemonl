@@ -153,27 +153,29 @@ export default async function Home() {
                 <Link
                   key={p.id}
                   href={`/projeler/${p.slug}`}
-                  className="grid grid-cols-12 gap-4 py-6 group hover:bg-black hover:text-white transition-colors"
+                  className="grid grid-cols-12 gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 py-8 lg:py-10 group hover:bg-black hover:text-white transition-colors"
                 >
-                  <div className="col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40">
+                  <div className="col-span-2 sm:col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40 self-center">
                     {String(p.id).padStart(2, "0")}
                   </div>
-                  <div className="col-span-1 tag tag-muted self-start group-hover:border-white group-hover:text-white/60">
-                    {p.category}
+                  <div className="col-span-10 sm:col-span-2 self-center">
+                    <span className="tag tag-muted group-hover:border-white group-hover:text-white/60">
+                      {p.category}
+                    </span>
                   </div>
-                  <div className="col-span-7 sm:col-span-6">
-                    <h3 className="font-display text-lg sm:text-xl font-semibold tracking-tight">
+                  <div className="col-span-12 sm:col-span-6 order-3 sm:order-none">
+                    <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-semibold tracking-tight">
                       {p.title}
                     </h3>
-                    <p className="text-sm text-black/60 group-hover:text-white/60 mt-1 line-clamp-1">
+                    <p className="text-sm text-black/60 group-hover:text-white/60 mt-2 line-clamp-2">
                       {p.description}
                     </p>
                   </div>
                   <div className="hidden sm:block col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-center">
                     {new Date(p.publishedAt).getFullYear()}
                   </div>
-                  <div className="col-span-3 sm:col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-center text-right">
-                    View →
+                  <div className="col-span-12 sm:col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40 self-center text-right">
+                    →
                   </div>
                 </Link>
               ))}

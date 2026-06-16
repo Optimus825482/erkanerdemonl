@@ -68,12 +68,12 @@ export default async function YazilarPage() {
               <Link
                 key={a.id}
                 href={`/yazilar/${a.slug}`}
-                className="grid grid-cols-12 gap-3 sm:gap-4 px-4 sm:px-6 py-6 group hover:bg-black hover:text-white transition-colors border-b border-black/10 last:border-b-0"
+                className="grid grid-cols-12 gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 py-8 lg:py-10 group hover:bg-black hover:text-white transition-colors border-b border-black/10 last:border-b-0"
               >
-                <div className="col-span-2 sm:col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40 self-start pt-1">
+                <div className="col-span-2 sm:col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40 self-center">
                   {String(a.id).padStart(2, "0")}
                 </div>
-                <div className="col-span-10 sm:col-span-2 self-start pt-1">
+                <div className="col-span-10 sm:col-span-2 self-center">
                   <span className="tag tag-muted group-hover:border-white group-hover:text-white/60">
                     {a.category}
                   </span>
@@ -82,11 +82,11 @@ export default async function YazilarPage() {
                   <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em] leading-[1.05]">
                     {a.title}
                   </h2>
-                  <p className="text-sm text-black/60 group-hover:text-white/60 mt-2 line-clamp-2 max-w-2xl">
+                  <p className="text-sm text-black/60 group-hover:text-white/60 mt-3 line-clamp-2 max-w-2xl">
                     {a.excerpt}
                   </p>
                   {getTags(a.tags).length > 0 && (
-                    <div className="hidden sm:flex flex-wrap gap-1.5 mt-3">
+                    <div className="hidden sm:flex flex-wrap gap-x-3 gap-y-1 mt-4">
                       {getTags(a.tags).slice(0, 4).map((t) => (
                         <span
                           key={t}
@@ -98,10 +98,10 @@ export default async function YazilarPage() {
                     </div>
                   )}
                 </div>
-                <div className="col-span-6 sm:col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-start pt-1">
+                <div className="col-span-6 sm:col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-center">
                   {formatDate(a.publishedAt)}
                 </div>
-                <div className="col-span-6 sm:col-span-1 font-mono text-xs text-black group-hover:text-white self-start pt-1 text-right">
+                <div className="col-span-6 sm:col-span-1 font-mono text-xs text-black group-hover:text-white self-center text-right">
                   →
                 </div>
               </Link>
