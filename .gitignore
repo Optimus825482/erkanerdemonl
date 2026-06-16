@@ -42,8 +42,10 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# claude local config
-/.claude/
+# claude local config (skill dosyaları repoda kalsın)
+/.claude/launch.json
+/.claude/settings.local.json
+!.claude/skills/
 
 # local debug scripts
 /check-articles.mjs
