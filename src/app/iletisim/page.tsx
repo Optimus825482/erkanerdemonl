@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 const COLORS = ["text-[#e63946]", "text-black"];
-const DOTS = ["bg-[#e63946]", "bg-black"];
 
 export default async function IletisimPage() {
   const [faqs, about] = await Promise.all([
