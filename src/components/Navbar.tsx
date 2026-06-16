@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const navLinks: ReadonlyArray<{ href: string; label: string }> = [
-  { href: "/", label: "ANA SAYFA" },
-  { href: "/hakkimda", label: "HAKKIMDA" },
-  { href: "/projeler", label: "PROJELER" },
-  { href: "/yazilar", label: "YAZILAR" },
-  { href: "/iletisim", label: "İLETİŞİM" },
+  { href: "/", label: "Ana Sayfa" },
+  { href: "/hakkimda", label: "Hakkımda" },
+  { href: "/projeler", label: "Projeler" },
+  { href: "/yazilar", label: "Yazılar" },
+  { href: "/iletisim", label: "İletişim" },
 ];
 
 export default function Navbar() {
@@ -42,45 +42,44 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
+      <header
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled || mobileOpen
-            ? "bg-[#0a0a0f]/90 backdrop-blur-lg border-b border-[#0ff]/20"
+            ? "bg-background/95 backdrop-blur-md border-b border-foreground/10"
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-8 sm:px-10 lg:px-12">
+        <div className="container">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Logo */}
             <Link
               href="/"
-              className="font-orbitron text-lg sm:text-xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors pl-1"
+              className="font-display text-base sm:text-lg font-semibold tracking-tight"
               aria-label="Ana sayfa"
             >
-              <span className="neon-glow-cyan">erkanerdem</span>
-              <span className="text-fuchsia-500">.online</span>
+              <span className="text-foreground">erkanerdem</span>
+              <span className="text-[var(--accent)]">.online</span>
             </Link>
 
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-2 lg:gap-5 xl:gap-7 pr-2">
+            <nav className="hidden md:flex items-center gap-1 lg:gap-3">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`nav-link font-tech text-xs lg:text-sm whitespace-nowrap ${
-                    isActive(link.href) ? "active" : ""
+                  className={`font-mono text-xs uppercase tracking-widest px-3 py-2 border-b-2 transition-colors ${
+                    isActive(link.href)
+                      ? "border-[var(--accent)] text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-foreground/30"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-            </div>
+            </nav>
 
-            {/* Mobile Toggle */}
             <button
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden p-3 -mr-2 text-cyan-400 hover:text-cyan-300 transition-colors"
+              className="md:hidden p-2 -mr-2 text-foreground"
               aria-label={mobileOpen ? "Menüyü kapat" : "Menüyü aç"}
               aria-expanded={mobileOpen}
             >
@@ -94,14 +93,14 @@ export default function Navbar() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M6 18L18 6M6 6l12 12"
                   />
                 ) : (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
+                    strokeWidth={1.5}
                     d="M4 6h16M4 12h16M4 18h16"
                   />
                 )}
@@ -109,44 +108,39 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Mobile Menu — full screen overlay */}
+      {/* Mobile menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden fixed inset-0 z-40 bg-[#0a0a0f]/95 backdrop-blur-lg transition-opacity duration-300 ${
+        className={`md:hidden fixed inset-0 z-40 bg-background transition-opacity duration-300 ${
           mobileOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
         style={{ paddingTop: "4rem" }}
       >
-        <div className="flex flex-col items-center justify-center min-h-full px-6 space-y-6">
+        <nav className="flex flex-col items-center justify-center min-h-full px-6 space-y-6">
           {navLinks.map((link, i) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className={`font-orbitron text-2xl sm:text-3xl font-bold tracking-wider transition-all duration-300 ${
+              className={`font-display text-2xl sm:text-3xl font-semibold tracking-tight transition-colors ${
                 isActive(link.href)
-                  ? "text-cyan-400 neon-glow-cyan"
-                  : "text-gray-300 hover:text-cyan-400"
+                  ? "text-[var(--accent)]"
+                  : "text-foreground"
               }`}
               style={{
                 animation: mobileOpen
-                  ? `fadeIn 0.4s ease-out ${i * 0.05}s both`
+                  ? `fadeUp 0.4s ease-out ${i * 0.05}s both`
                   : undefined,
               }}
             >
               {link.label}
             </Link>
           ))}
-          <div className="pt-8 text-center">
-            <p className="font-tech text-xs text-gray-500">
-              <span className="text-cyan-400 pulse">[ SYSTEM ONLINE ]</span>
-            </p>
-          </div>
-        </div>
+        </nav>
       </div>
     </>
   );

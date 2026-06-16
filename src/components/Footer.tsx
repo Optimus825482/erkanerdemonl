@@ -2,21 +2,20 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative z-10 border-t border-[#0ff]/20 bg-[#0a0a0f]/80 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="flex flex-col gap-6 md:flex-row md:justify-between md:items-center">
-          <div className="font-tech text-sm text-gray-500 text-center md:text-left">
-            © {year}{" "}
-            <span className="text-cyan-400">Erkan Erdem</span>. Tüm hakları
-            saklıdır.
+    <footer className="border-t border-foreground/10 mt-24">
+      <div className="container py-12">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="font-mono text-xs text-muted-foreground">
+            © {year} <span className="text-foreground">Erkan Erdem</span>. All
+            rights reserved.
           </div>
 
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex items-center gap-3">
             <a
-              href="https://github.com"
+              href="https://github.com/Optimus825482"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-cyan-400 transition-colors"
+              className="w-10 h-10 border border-foreground/15 hover:border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors"
               aria-label="GitHub"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -24,22 +23,18 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="mailto:info@erkanerdem.net"
-              className="text-gray-500 hover:text-fuchsia-400 transition-colors"
+              href="mailto:info@erkanerdem.online"
+              className="w-10 h-10 border border-foreground/15 hover:border-foreground hover:bg-foreground hover:text-background flex items-center justify-center transition-colors"
               aria-label="E-posta"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
               </svg>
             </a>
-          </div>
-
-          <div className="flex items-center justify-center gap-2">
-            <span className="font-tech text-xs text-gray-600">[</span>
-            <span className="font-tech text-xs text-cyan-400 pulse">
-              SYSTEM ONLINE
+            <span className="font-mono text-xs text-muted-foreground flex items-center gap-1.5 ml-2">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 pulse" />
+              ONLINE
             </span>
-            <span className="font-tech text-xs text-gray-600">]</span>
           </div>
         </div>
       </div>

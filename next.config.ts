@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: PROJECT_ROOT,
   },
+  // Workspace hoist sorununu çöz — Next.js parent'ta modül aramasın
+  outputFileTracingRoot: PROJECT_ROOT,
 };
 
 export default nextConfig;

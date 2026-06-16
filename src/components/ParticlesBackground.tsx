@@ -40,10 +40,10 @@ export default function ParticlesBackground() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Partikül sistemi — subtle
+    // Partikül sistemi — YENİ TEMA: çok hafif, sadece subtle kıvılcımlar
     const isMobile = window.innerWidth < 768;
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = isMobile ? 600 : 1200;
+    const particlesCount = isMobile ? 200 : 400;
     const posArray = new Float32Array(particlesCount * 3);
     for (let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 10;
@@ -65,11 +65,11 @@ export default function ParticlesBackground() {
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.02,
-      color: 0x00d4ff,
+      size: 0.015,
+      color: 0xff4d2e, // Yeni tema accent: turuncu
       transparent: true,
-      opacity: isMobile ? 0.4 : 0.6,
-      blending: THREE.AdditiveBlending,
+      opacity: isMobile ? 0.2 : 0.3,
+      blending: THREE.NormalBlending,
     });
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
@@ -81,15 +81,15 @@ export default function ParticlesBackground() {
       new THREE.OctahedronGeometry(0.25, 0),
       new THREE.TetrahedronGeometry(0.3, 0),
     ];
-    const shapeCount = isMobile ? 4 : 10;
+    const shapeCount = isMobile ? 2 : 4;
     for (let i = 0; i < shapeCount; i++) {
       const geometry =
         geometries[Math.floor(Math.random() * geometries.length)] ?? geometries[0];
       const material = new THREE.MeshBasicMaterial({
-        color: Math.random() > 0.5 ? 0x00d4ff : 0xd946ef,
+        color: 0x0a0a0a, // Yeni tema: siyah wireframe (cyan/magenta değil)
         wireframe: true,
         transparent: true,
-        opacity: 0.2,
+        opacity: 0.15,
       });
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(
