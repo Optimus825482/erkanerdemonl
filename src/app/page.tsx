@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAbout, getPublishedProjects } from "@/lib/queries";
 import SystemStatus from "@/components/SystemStatus";
 import MetricsWidget from "@/components/MetricsWidget";
+import TerminalBoot from "@/components/TerminalBoot";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,28 @@ export default async function Home() {
             <span className="text-gray-600 hidden md:inline">
               // build: {new Date().toISOString().slice(0, 10)}
             </span>
-            <span>v1.0.0</span>
+            <span className="text-fuchsia-400">v1.0.0</span>
+          </div>
+
+          {/* Terminal boot — high-impact reveal */}
+          <div className="reveal mb-6 sm:mb-8 glass p-4 sm:p-5 max-w-2xl mx-auto lg:mx-0">
+            <div className="flex items-center gap-2 mb-3 pb-2 border-b border-cyan-400/20">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
+              <span className="ml-2 font-tech text-[10px] text-gray-500">
+                ~/erkanerdem — boot
+              </span>
+            </div>
+            <TerminalBoot
+              lines={[
+                "init identity.core",
+                "loading experience.dev",
+                "mounting skills.fullstack",
+                "activating ai.engine",
+                "ready",
+              ]}
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr,auto] gap-8 lg:gap-12 items-center">
