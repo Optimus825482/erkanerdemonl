@@ -3,6 +3,8 @@
 # Sadece About tablosu boşsa çalışır (idempotent).
 set -e
 
+cd /app
+
 echo "[seed] waiting for database..."
 for i in $(seq 1 30); do
   if node -e "
@@ -19,7 +21,7 @@ for i in $(seq 1 30); do
 done
 
 echo "[seed] running prisma db push..."
-npx prisma db push --skip-generate --accept-data-loss 2>&1 | tail -5
+node node_modules/prisma/build/index.js db push --skip-generate --accept-data-loss 2>&1 | tail -5 || echo "[seed] db push via node failed, trying prisma CLI"
 
 EXISTS=$(node -e "
   const { PrismaClient } = require('@prisma/client');
@@ -31,7 +33,14 @@ EXISTS=$(node -e "
 
 if [ "$EXISTS" = "no" ] || [ -z "$EXISTS" ]; then
   echo "[seed] seeding database..."
-  npx tsx prisma/seed.ts 2>&1 | tail -15
+  # TypeScript seed'i runtime'ta çalıştır (tsx gerekli)
+  if [ -f node_modules/.bin/tsx ]; then
+    node_modules/.bin/tsx prisma/seed.ts 2>&1 | tail -15
+  else
+    # Fallback: ts-node veya node ile TS parser
+    echo "[seed] tsx not found, using node --import tsx/esm"
+    node --import tsx prisma/seed.ts 2>&1 | tail -15
+  fi
   echo "[seed] done."
 else
   echo "[seed] data already exists, skipping."

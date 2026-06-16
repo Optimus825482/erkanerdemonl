@@ -46,17 +46,31 @@ RUN apk add --no-cache openssl curl \
   && addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# Standalone Next.js build (smaller image)
+# Public
 COPY --from=builder /app/public ./public
+
+# Standalone Next.js build
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 
-# Seed script (entrypoint'ta DB hazır olunca çalışır)
+# Prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+
+# Prisma CLI, tsx, diğer build dependency'ler (db push + seed için)
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tsx ./node_modules/tsx
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/typescript ./node_modules/typescript
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/.bin
+
+# Seed script
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/seed.sh ./scripts/seed.sh
 RUN chmod +x ./scripts/seed.sh
+
+# Entrypoint
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
+RUN chmod +x ./scripts/docker-entrypoint.sh
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
