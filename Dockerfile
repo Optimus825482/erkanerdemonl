@@ -19,20 +19,16 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build-time public env
 ARG NEXT_PUBLIC_SITE_URL=https://erkanerdem.online
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build sırasında Prisma client generate ve static generation DATABASE_URL'a ihtiyaç duyar
-ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public"
-
 RUN npx prisma generate
 RUN npm run build
 
 # ============================================
-# Stage 3: runner (production)
+# Stage 3: runner (full node_modules + Prisma CLI)
 # ============================================
 FROM node:20-alpine AS runner
 WORKDIR /app
@@ -42,46 +38,31 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-RUN apk add --no-cache openssl curl \
+RUN apk add --no-cache openssl curl bash \
   && addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# Public
-COPY --from=builder /app/public ./public
-
-# Standalone Next.js build
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Prisma
+# Source code
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Prisma CLI, tsx, diğer build dependency'ler (db push + seed için)
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/tsx ./node_modules/tsx
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/typescript ./node_modules/typescript
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin ./node_modules/.bin
+# Production node_modules — Prisma CLI + tsx burada
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 
-# Seed script
+# Scripts
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/seed.sh ./scripts/seed.sh
-RUN chmod +x ./scripts/seed.sh
-
-# Entrypoint
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
-RUN chmod +x ./scripts/docker-entrypoint.sh
+RUN chmod +x ./scripts/seed.sh ./scripts/docker-entrypoint.sh
 
 # Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=5 \
   CMD curl -f http://localhost:3000/ || exit 1
-
-# Entrypoint: DB hazır olunca seed çalıştır, sonra app
-COPY --from=builder --chown=nextjs:nodejs /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
-RUN chmod +x ./scripts/docker-entrypoint.sh
 
 USER nextjs
 EXPOSE 3000
 
-ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
-CMD ["node", "server.js"]
+ENTRYPOINT ["/app/scripts/docker-entrypoint.sh"]
+CMD ["npx", "next", "start"]
