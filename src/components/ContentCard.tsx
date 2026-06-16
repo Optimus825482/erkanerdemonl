@@ -9,6 +9,7 @@ interface BaseCardProps {
   href?: string;
   tags?: string[];
   thumbnail?: string;
+  featured?: boolean;
 }
 
 const COLOR_MAP: Record<string, { text: string; dot: string }> = {
@@ -43,6 +44,7 @@ export default function ContentCard({
   href,
   tags,
   thumbnail,
+  featured = false,
 }: BaseCardProps) {
   const c = colorForCategory(category);
   const content = (
@@ -73,12 +75,24 @@ export default function ContentCard({
         </div>
 
         {/* Title */}
-        <h3 className="font-display text-lg sm:text-xl font-semibold tracking-tight mb-3 group-hover:text-[var(--accent)] transition-colors">
+        <h3
+          className={`font-display font-semibold tracking-tight mb-3 group-hover:text-[var(--accent)] transition-colors ${
+            featured
+              ? "text-2xl sm:text-3xl lg:text-4xl"
+              : "text-lg sm:text-xl"
+          }`}
+        >
           {title}
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 flex-1">
+        <p
+          className={`text-muted-foreground leading-relaxed mb-4 flex-1 ${
+            featured
+              ? "text-sm sm:text-base line-clamp-4 lg:line-clamp-6"
+              : "text-sm line-clamp-3"
+          }`}
+        >
           {description}
         </p>
 

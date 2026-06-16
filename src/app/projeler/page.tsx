@@ -28,8 +28,38 @@ function getTechs(tech: unknown): string[] {
     .filter((s): s is string => s !== null);
 }
 
+interface BentoItem {
+  id: number;
+  className: string;
+}
+
+/**
+ * Bento grid pattern (asymmetric):
+ *  - İlk item: featured 2x2 (sm+)
+ *  - Sonraki ikili: wide 2x1 (md+)
+ *  - Diğerleri: normal 1x1
+ *  - Son item 7+ ise: full-width 4x1
+ *  - Mobil: tek kolon
+ */
+function getBentoLayout(count: number): BentoItem[] {
+  const items: BentoItem[] = [];
+  for (let i = 0; i < count; i++) {
+    if (i === 0) {
+      items.push({ id: i, className: "sm:col-span-2 sm:row-span-2" });
+    } else if (i === 1 || i === 2) {
+      items.push({ id: i, className: "sm:col-span-2 lg:col-span-1" });
+    } else if (i === count - 1 && count >= 7) {
+      items.push({ id: i, className: "sm:col-span-2 lg:col-span-4" });
+    } else {
+      items.push({ id: i, className: "" });
+    }
+  }
+  return items;
+}
+
 export default async function ProjelerPage() {
   const projects = await getPublishedProjects();
+  const layout = getBentoLayout(projects.length);
 
   return (
     <div className="min-h-screen">
@@ -56,7 +86,7 @@ export default async function ProjelerPage() {
             </p>
           </div>
 
-          {/* Grid */}
+          {/* Bento Grid */}
           {projects.length === 0 ? (
             <div className="reveal border border-foreground/15 p-12 text-center">
               <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
@@ -67,20 +97,34 @@ export default async function ProjelerPage() {
               </p>
             </div>
           ) : (
-            <div className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {projects.map((p, i) => (
-                <ContentCard
-                  key={p.id}
-                  index={`${String(i + 1).padStart(2, "0")}`}
-                  category={p.category}
-                  title={p.title}
-                  description={p.description}
-                  date={formatDate(p.publishedAt)}
-                  thumbnail={p.thumbnailImage}
-                  tags={getTechs(p.technologies)}
-                  href={`/projeler/${p.slug}`}
-                />
-              ))}
+            <div
+              className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+              style={{ gridAutoRows: "minmax(220px, auto)" }}
+            >
+              {projects.map((p, i) => {
+                const item = layout[i];
+                if (!item) return null;
+                const isFeatured = i === 0;
+                return (
+                  <div key={p.id} className={item.className}>
+                    <ContentCard
+                      index={`${String(i + 1).padStart(2, "0")}`}
+                      category={p.category}
+                      title={p.title}
+                      description={
+                        isFeatured && p.longDescription
+                          ? p.longDescription
+                          : p.description
+                      }
+                      date={formatDate(p.publishedAt)}
+                      thumbnail={p.thumbnailImage}
+                      tags={getTechs(p.technologies)}
+                      href={`/projeler/${p.slug}`}
+                      featured={isFeatured}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

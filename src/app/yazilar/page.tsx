@@ -21,8 +21,28 @@ function getTags(raw: unknown): string[] {
   return raw.filter((t): t is string => typeof t === "string");
 }
 
+interface BentoItem {
+  id: number;
+  className: string;
+}
+
+function getBentoLayout(count: number): BentoItem[] {
+  const items: BentoItem[] = [];
+  for (let i = 0; i < count; i++) {
+    if (i === 0) {
+      items.push({ id: i, className: "sm:col-span-2 sm:row-span-2" });
+    } else if (i === 1 || i === 2) {
+      items.push({ id: i, className: "sm:col-span-2 lg:col-span-1" });
+    } else {
+      items.push({ id: i, className: "" });
+    }
+  }
+  return items;
+}
+
 export default async function YazilarPage() {
   const articles = await getPublishedArticles();
+  const layout = getBentoLayout(articles.length);
 
   return (
     <div className="min-h-screen">
@@ -50,7 +70,7 @@ export default async function YazilarPage() {
             </p>
           </div>
 
-          {/* Grid */}
+          {/* Bento Grid */}
           {articles.length === 0 ? (
             <div className="reveal border border-foreground/15 p-12 text-center">
               <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
@@ -61,20 +81,30 @@ export default async function YazilarPage() {
               </p>
             </div>
           ) : (
-            <div className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {articles.map((a, i) => (
-                <ContentCard
-                  key={a.id}
-                  index={`${String(i + 1).padStart(2, "0")}`}
-                  category={a.category}
-                  title={a.title}
-                  description={a.excerpt}
-                  date={formatDate(a.publishedAt)}
-                  tags={getTags(a.tags)}
-                  thumbnail={a.thumbnailImage}
-                  href={`/yazilar/${a.slug}`}
-                />
-              ))}
+            <div
+              className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+              style={{ gridAutoRows: "minmax(220px, auto)" }}
+            >
+              {articles.map((a, i) => {
+                const item = layout[i];
+                if (!item) return null;
+                const isFeatured = i === 0;
+                return (
+                  <div key={a.id} className={item.className}>
+                    <ContentCard
+                      index={`${String(i + 1).padStart(2, "0")}`}
+                      category={a.category}
+                      title={a.title}
+                      description={isFeatured ? a.content.slice(0, 240) + "..." : a.excerpt}
+                      date={formatDate(a.publishedAt)}
+                      tags={getTags(a.tags)}
+                      thumbnail={a.thumbnailImage}
+                      href={`/yazilar/${a.slug}`}
+                      featured={isFeatured}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
