@@ -1,0 +1,76 @@
+name: erkanerdem-portfolio
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: erkanerdem-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-erkan}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-erkan_secret_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-erkanerdem_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-erkan} -d ${POSTGRES_DB:-erkanerdem_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_SITE_URL: https://erkanerdem.online
+    container_name: erkanerdem-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-erkan}:${POSTGRES_PASSWORD:-erkan_secret_change_me}@postgres:5432/${POSTGRES_DB:-erkanerdem_db}
+      NEXT_PUBLIC_SITE_URL: https://erkanerdem.online
+      NEXT_TELEMETRY_DISABLED: 1
+    volumes:
+      - app_uploads:/app/public/images/uploads
+    networks:
+      - internal
+      - web
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Coolify Traefik reverse proxy için label'lar
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.erkanerdem-app.rule=Host(`erkanerdem.online`) || Host(`www.erkanerdem.online`)"
+      - "traefik.http.routers.erkanerdem-app.entrypoints=https"
+      - "traefik.http.routers.erkanerdem-app.entrypoints=http"
+      - "traefik.http.routers.erkanerdem-app.tls=true"
+      - "traefik.http.routers.erkanerdem-app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.erkanerdem-app.loadbalancer.server.port=3000"
+      - "traefik.http.routers.erkanerdem-app-http.rule=Host(`erkanerdem.online`) || Host(`www.erkanerdem.online`)"
+      - "traefik.http.routers.erkanerdem-app-http.entrypoints=http"
+      - "traefik.http.routers.erkanerdem-app-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+volumes:
+  postgres_data:
+  app_uploads:
+
+networks:
+  internal:
+    driver: bridge
+  web:
+    external: true
+    name: coolify
