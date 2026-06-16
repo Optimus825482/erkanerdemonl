@@ -25,6 +25,9 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Build sırasında Prisma client generate ve static generation DATABASE_URL'a ihtiyaç duyar
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build?schema=public"
+
 RUN npx prisma generate
 RUN npm run build
 
