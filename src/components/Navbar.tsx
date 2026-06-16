@@ -52,20 +52,20 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               href="/"
-              className="font-mono text-sm font-semibold tracking-tight flex items-center gap-2"
+              className="font-mono text-base font-semibold tracking-tight flex items-center gap-2"
               aria-label="Ana sayfa"
             >
-              <span className="inline-block w-3 h-3 bg-[#e63946]" />
+              <span className="inline-block w-3.5 h-3.5 bg-[#e63946]" />
               <span>Erkan Erdem</span>
             </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden md:flex items-center">
-              {navLinks.map((link, i) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`font-mono text-xs uppercase tracking-wider px-4 py-5 border-l border-black/10 last:border-r ${
+                  className={`font-mono text-sm uppercase tracking-wider px-6 lg:px-8 py-6 border-l border-black/10 last:border-r ${
                     isActive(link.href)
                       ? "text-[#e63946] font-semibold"
                       : "text-black hover:text-[#e63946] transition-colors"
@@ -123,11 +123,11 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className={`font-mono text-sm uppercase tracking-wider px-6 py-5 border-b border-black/10 flex justify-between ${
+              className={`font-mono text-base uppercase tracking-wider px-6 py-6 border-b border-black/10 flex justify-between items-center ${
                 isActive(link.href) ? "text-[#e63946]" : "text-black"
               }`}
             >
-              <span className="text-black/40 text-xs">{link.index}</span>
+              <span className="text-black/40 text-sm">{link.index}</span>
               <span>{link.label}</span>
             </Link>
           ))}
