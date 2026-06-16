@@ -5,88 +5,105 @@ import ContactSection from "@/components/ContactSection";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "İletişim - Erkan Erdem",
-  description: "Bana ulaşın",
+  title: "İletişim — Erkan Erdem",
+  description: "Bana ulaşın. Projeler, iş birliği veya sadece merhaba.",
 };
 
-const COLOR_MAP: Record<string, string> = {
-  cyan: "text-cyan-400",
-  fuchsia: "text-fuchsia-400",
-  magenta: "text-fuchsia-400",
-  green: "text-green-400",
-  yellow: "text-yellow-400",
-};
-
-const DOT_MAP: Record<string, string> = {
-  cyan: "bg-cyan-400",
-  fuchsia: "bg-fuchsia-400",
-  magenta: "bg-fuchsia-400",
-  green: "bg-green-400",
-  yellow: "bg-yellow-400",
-};
+const FAQ_CARDS = [
+  {
+    color: "cyan",
+    text: "text-cyan-400",
+    dot: "bg-cyan-400",
+  },
+  {
+    color: "magenta",
+    text: "text-[var(--accent)]",
+    dot: "bg-[var(--accent)]",
+  },
+  {
+    color: "green",
+    text: "text-emerald-400",
+    dot: "bg-emerald-400",
+  },
+  {
+    color: "yellow",
+    text: "text-yellow-400",
+    dot: "bg-yellow-400",
+  },
+];
 
 export default async function IletisimPage() {
-  const [faqs, about] = await Promise.all([
+  const [faqs] = await Promise.all([
     getPublishedFAQs(),
     getAbout(),
   ]);
 
   return (
     <div className="min-h-screen">
-      <section className="section section-content">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="reveal mb-10 sm:mb-14 text-center">
-            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 justify-center">
-              <span className="font-tech text-xs text-cyan-400">04.</span>
-              <h1 className="font-orbitron text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-                İLETİŞİM
-              </h1>
-              <div className="flex-1 hud-line max-w-xs" />
+      <section className="section">
+        <div className="container">
+          {/* Başlık */}
+          <div className="reveal mb-12 sm:mb-20">
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                04
+              </span>
+              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                /
+              </span>
+              <span className="font-mono text-xs uppercase tracking-widest">
+                Contact
+              </span>
             </div>
-            <p className="font-tech text-gray-300 text-base sm:text-lg max-w-2xl mx-auto">
+            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter mb-8 max-w-4xl">
+              İletişim.
+            </h1>
+            <p className="font-display text-xl sm:text-2xl text-muted-foreground leading-relaxed max-w-3xl">
               Projeler hakkında konuşmak, iş birliği yapmak veya sadece merhaba
-              demek için bana ulaşabilirsiniz.
+              demek için aşağıdaki formu kullanabilirsiniz.
             </p>
-            {about?.email && (
-              <p className="font-tech text-sm text-cyan-400 mt-3">
-                {about.email}
-              </p>
-            )}
           </div>
 
-          {/* İletişim Formu */}
-          <div className="reveal mb-10 sm:mb-14">
+          {/* İletişim formu */}
+          <div className="reveal mb-20 sm:mb-24 max-w-3xl">
             <ContactSection />
           </div>
 
           {/* SSS */}
           {faqs.length > 0 && (
-            <div>
-              <div className="reveal flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                <span className="font-tech text-xs text-fuchsia-400">05.</span>
-                <h2 className="font-orbitron text-2xl sm:text-3xl font-bold text-white">
-                  SIKÇA SORULAN SORULAR
-                </h2>
-                <div className="flex-1 hud-line" />
+            <div className="reveal">
+              <div className="flex items-baseline gap-3 mb-10 pb-4 border-b border-foreground/10">
+                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                  05
+                </span>
+                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                  /
+                </span>
+                <span className="font-mono text-xs uppercase tracking-widest">
+                  FAQ
+                </span>
               </div>
-              <div className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                {faqs.map((f) => {
-                  const textClass =
-                    COLOR_MAP[f.colorTheme] ?? "text-cyan-400";
-                  const dotClass = DOT_MAP[f.colorTheme] ?? "bg-cyan-400";
+
+              <div className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6">
+                {faqs.map((f: { id: number; question: string; answer: string; colorTheme: string }) => {
+                  const idx = Math.abs(f.id) % FAQ_CARDS.length;
+                  const card = FAQ_CARDS[idx] ?? FAQ_CARDS[0]!;
                   return (
-                    <div key={f.id} className="glass p-6 card-hover hud-corner">
+                    <div
+                      key={f.id}
+                      className="border border-foreground/15 p-6 hover:border-foreground transition-colors"
+                    >
                       <div className="flex items-start gap-3">
-                        <div
-                          className={`w-2 h-2 rounded-full pulse mt-2 ${dotClass}`}
+                        <span
+                          className={`mt-1.5 inline-block w-2 h-2 rounded-full ${card.dot} pulse`}
                         />
                         <div>
                           <h3
-                            className={`font-orbitron text-lg mb-2 ${textClass}`}
+                            className={`font-display text-lg font-semibold tracking-tight mb-2 ${card.text}`}
                           >
                             {f.question}
                           </h3>
-                          <p className="font-tech text-gray-300 text-sm leading-relaxed">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
                             {f.answer}
                           </p>
                         </div>

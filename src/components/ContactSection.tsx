@@ -6,8 +6,7 @@ import toast from "react-hot-toast";
 
 export default function ContactSection() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
-      <h2 className="cyber-heading text-4xl font-bold mb-8 text-center neon-text">İletişim</h2>
+    <div className="space-y-12">
       <ContactForm />
       <NewsletterForm />
     </div>
@@ -16,94 +15,180 @@ export default function ContactSection() {
 
 function ContactForm() {
   const [pending, start] = useTransition();
-  const [msg, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<{
+    type: "success" | "error" | "warning";
+    text: string;
+  } | null>(null);
 
   return (
-    <div className="cyber-glass-light p-8 rounded-xl mb-12">
-      <form
-        action={(fd) =>
-          start(async () => {
-            const res = await submitContact(fd);
-            if (res.ok) {
-              setMsg("Mesajınız gönderildi! En kısa sürede dönüş yapılacak.");
-              toast.success("Mesaj gönderildi");
-            } else {
-              const err = res.error ?? "Bir hata oluştu.";
-              setMsg(err);
-              toast.error(err);
-            }
-          })
-        }
-        className="space-y-6"
-      >
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Adınız Soyadınız</label>
-          <input
-            name="name"
-            type="text"
-            required
-            minLength={2}
-            maxLength={100}
-            className="mt-1 block w-full p-3 bg-[#1a1a2e] border cyber-border-field text-gray-300 rounded-md focus:outline-none focus:ring-[#0ff] focus:border-[#0ff]"
-          />
+    <form
+      action={(fd) =>
+        start(async () => {
+          const res = await submitContact(fd);
+          if (res.ok) {
+            setMsg({
+              type: "success",
+              text: "Mesajınız gönderildi. En kısa sürede dönüş yapılacak.",
+            });
+            toast.success("Mesaj gönderildi");
+            (document.getElementById("contact-form") as HTMLFormElement | null)?.reset();
+          } else {
+            setMsg({
+              type: "error",
+              text: res.error ?? "Bir hata oluştu.",
+            });
+            toast.error(res.error ?? "Hata");
+          }
+        })
+      }
+      id="contact-form"
+      className="border border-foreground/15 p-6 sm:p-8 bg-background/50 backdrop-blur-sm"
+    >
+      <div className="flex items-baseline gap-3 mb-6 pb-4 border-b border-foreground/10">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          Form
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          /
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-widest">
+          Contact
+        </span>
+      </div>
+
+      <div className="space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label
+              htmlFor="name"
+              className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
+            >
+              İsim
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              minLength={2}
+              maxLength={100}
+              placeholder="Ad Soyad"
+              className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
+            >
+              E-posta
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              maxLength={120}
+              placeholder="ornek@mail.com"
+              className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
+            />
+          </div>
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-300">E-posta</label>
+          <label
+            htmlFor="subject"
+            className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
+          >
+            Konu (opsiyonel)
+          </label>
           <input
-            name="email"
-            type="email"
-            required
-            maxLength={120}
-            className="mt-1 block w-full p-3 bg-[#1a1a2e] border cyber-border-field text-gray-300 rounded-md focus:outline-none focus:ring-[#0ff] focus:border-[#0ff]"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Konu</label>
-          <input
+            id="subject"
             name="subject"
             type="text"
             maxLength={200}
-            className="mt-1 block w-full p-3 bg-[#1a1a2e] border cyber-border-field text-gray-300 rounded-md focus:outline-none focus:ring-[#0ff] focus:border-[#0ff]"
+            placeholder="Proje teklifi, iş birliği, ..."
+            className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
           />
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-300">Mesajınız</label>
+          <label
+            htmlFor="message"
+            className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
+          >
+            Mesaj
+          </label>
           <textarea
+            id="message"
             name="message"
-            rows={5}
+            rows={6}
             required
             minLength={10}
             maxLength={5000}
-            className="mt-1 block w-full p-3 bg-[#1a1a2e] border cyber-border-field text-gray-300 rounded-md focus:outline-none focus:ring-[#0ff] focus:border-[#0ff]"
+            placeholder="Mesajınız..."
+            className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors resize-y"
           />
         </div>
-        <div className="flex justify-center">
+
+        <div className="flex items-center justify-between pt-2">
+          <p className="font-mono text-[10px] text-muted-foreground">
+            {`> ready to transmit`}
+          </p>
           <button
             type="submit"
             disabled={pending}
-            className="cyber-button text-white py-3 px-8 rounded-md font-semibold bg-[#0ff] hover:bg-[#ff2b9d] text-[#1a1a2e] disabled:opacity-50"
+            className="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-foreground text-background hover:bg-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {pending ? "Gönderiliyor…" : "Gönder"}
+            {pending ? "Gönderiliyor..." : "Gönder →"}
           </button>
         </div>
-        {msg && <p className="text-center text-sm text-[#0ff]">{msg}</p>}
-      </form>
-    </div>
+
+        {msg && (
+          <div
+            className={`text-sm font-mono px-4 py-3 border ${
+              msg.type === "success"
+                ? "border-emerald-500/50 text-emerald-400 bg-emerald-500/5"
+                : msg.type === "warning"
+                  ? "border-yellow-500/50 text-yellow-400 bg-yellow-500/5"
+                  : "border-[var(--accent)]/50 text-[var(--accent)] bg-[var(--accent)]/5"
+            }`}
+          >
+            {msg.type === "success" ? "✓ " : msg.type === "warning" ? "⚠ " : "✕ "}
+            {msg.text}
+          </div>
+        )}
+      </div>
+    </form>
   );
 }
 
 function NewsletterForm() {
   const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<string | null>(null);
+
   return (
-    <div className="cyber-glass p-8 rounded-xl text-center">
-      <h3 className="cyber-heading text-2xl text-[#ff2b9d] mb-3">Bültene Abone Ol</h3>
-      <p className="text-gray-300 mb-6">Yeni yazılardan haberdar olmak için abone olun.</p>
+    <div className="border border-foreground/15 p-6 sm:p-8 text-center">
+      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
+        Newsletter
+      </div>
+      <h3 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
+        Bültene abone ol
+      </h3>
+      <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+        Yeni yazılardan haberdar olmak için e-posta adresini bırak.
+      </p>
       <form
         action={(fd) =>
           start(async () => {
             const res = await subscribeNewsletter(fd);
-            if (res.ok) toast.success(res.message ?? "Abone olundu");
-            else toast.error(res.error ?? "Bir hata oluştu");
+            if (res.ok) {
+              setMsg(res.message ?? "Abone olundu");
+              toast.success(res.message ?? "Abone olundu");
+            } else {
+              setMsg(res.error ?? "Bir hata oluştu");
+              toast.error(res.error ?? "Hata");
+            }
           })
         }
         className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
@@ -113,16 +198,19 @@ function NewsletterForm() {
           type="email"
           required
           placeholder="ornek@mail.com"
-          className="flex-1 px-4 py-3 bg-[#1a1a2e] border cyber-border-field text-gray-300 rounded-md focus:outline-none focus:ring-[#0ff] focus:border-[#0ff]"
+          className="flex-1 bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none"
         />
         <button
           type="submit"
           disabled={pending}
-          className="cyber-button px-6 py-3 rounded-md font-semibold bg-[#0ff] text-[#1a1a2e] hover:bg-[#ff2b9d] disabled:opacity-50"
+          className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
         >
-          {pending ? "..." : "Abone Ol"}
+          {pending ? "..." : "Abone Ol →"}
         </button>
       </form>
+      {msg && (
+        <p className="mt-3 text-xs font-mono text-muted-foreground">{msg}</p>
+      )}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import crypto from "node:crypto";
+import { sendContactEmail } from "./email";
 
 // --- Public actions ---
 
@@ -24,14 +25,37 @@ export async function submitContact(formData: FormData) {
   if (!parsed.success) {
     return { ok: false, error: "Lütfen tüm alanları doğru şekilde doldurun." };
   }
+  const data = parsed.data;
+
+  // 1. DB'ye kaydet (her zaman)
   await prisma.contactMessage.create({
     data: {
-      ...parsed.data,
+      name: data.name,
+      email: data.email,
+      subject: data.subject,
+      message: data.message,
       ipAddress: null,
       userAgent: null,
     },
   });
   revalidatePath("/admin/messages");
+
+  // 2. Email gönder (RESEND_API_KEY varsa)
+  const emailResult = await sendContactEmail({
+    name: data.name,
+    email: data.email,
+    subject: data.subject,
+    message: data.message,
+  });
+
+  if (!emailResult.ok) {
+    // DB kaydı başarılı, email başarısız — kullanıcıya bildir
+    return {
+      ok: true,
+      warning: "Mesajınız kaydedildi ancak e-posta bildirimi gönderilemedi.",
+    };
+  }
+
   return { ok: true };
 }
 
