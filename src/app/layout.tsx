@@ -1,22 +1,20 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Geist } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ParticlesBackground from "@/components/ParticlesBackground";
 import RevealOnScroll from "@/components/RevealOnScroll";
-import CustomCursor from "@/components/CustomCursor";
 import { Toaster } from "react-hot-toast";
 
-const geist = Geist({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-geist",
+  variable: "--font-inter",
   display: "swap",
 });
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
   variable: "--font-jetbrains",
   display: "swap",
 });
@@ -32,7 +30,6 @@ export const metadata: Metadata = {
     "Veteriner Hekim",
     "Web Development",
     "AI",
-    "Machine Learning",
   ],
   authors: [{ name: "Erkan Erdem" }],
   openGraph: {
@@ -57,38 +54,26 @@ export default function RootLayout({
     <html
       lang="tr"
       suppressHydrationWarning
-      className={`${geist.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${jetbrains.variable}`}
     >
-      <body className="antialiased font-display bg-background text-foreground">
-        {/* Subtle particles */}
-        <ParticlesBackground />
-
-        {/* Scanlines — very subtle */}
-        <div className="scanlines" aria-hidden="true" />
-
-        {/* Reveal observer */}
+      <body className="bg-white text-black font-sans antialiased">
         <RevealOnScroll />
-
-        {/* Custom cursor */}
-        <CustomCursor />
-
-        {/* Toast */}
         <Toaster
-          position="top-right"
+          position="bottom-right"
           toastOptions={{
-            duration: 4000,
+            duration: 3000,
             style: {
               background: "#0a0a0a",
-              color: "#fafaf9",
+              color: "#fafafa",
               border: "1px solid #0a0a0a",
+              borderRadius: 0,
+              fontFamily: "var(--font-mono)",
+              fontSize: "12px",
             },
           }}
         />
-
         <Navbar />
-
-        <main className="min-h-screen relative z-10">{children}</main>
-
+        <main className="relative min-h-screen">{children}</main>
         <Footer />
       </body>
     </html>

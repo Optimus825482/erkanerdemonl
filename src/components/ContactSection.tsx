@@ -22,6 +22,7 @@ function ContactForm() {
 
   return (
     <form
+      id="contact-form"
       action={(fd) =>
         start(async () => {
           const res = await submitContact(fd);
@@ -31,7 +32,9 @@ function ContactForm() {
               text: "Mesajınız gönderildi. En kısa sürede dönüş yapılacak.",
             });
             toast.success("Mesaj gönderildi");
-            (document.getElementById("contact-form") as HTMLFormElement | null)?.reset();
+            (
+              document.getElementById("contact-form") as HTMLFormElement | null
+            )?.reset();
           } else {
             setMsg({
               type: "error",
@@ -41,125 +44,120 @@ function ContactForm() {
           }
         })
       }
-      id="contact-form"
-      className="border border-foreground/15 p-6 sm:p-8 bg-background/50 backdrop-blur-sm"
+      className="space-y-6"
     >
-      <div className="flex items-baseline gap-3 mb-6 pb-4 border-b border-foreground/10">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          Form
-        </span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          /
-        </span>
-        <span className="font-mono text-[10px] uppercase tracking-widest">
-          Contact
-        </span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <Field
+          label="İsim"
+          name="name"
+          type="text"
+          required
+          minLength={2}
+          maxLength={100}
+          placeholder="Ad Soyad"
+        />
+        <Field
+          label="E-posta"
+          name="email"
+          type="email"
+          required
+          maxLength={120}
+          placeholder="ornek@mail.com"
+        />
       </div>
 
-      <div className="space-y-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label
-              htmlFor="name"
-              className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
-            >
-              İsim
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              minLength={2}
-              maxLength={100}
-              placeholder="Ad Soyad"
-              className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="email"
-              className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
-            >
-              E-posta
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              maxLength={120}
-              placeholder="ornek@mail.com"
-              className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
-            />
-          </div>
-        </div>
+      <Field
+        label="Konu (opsiyonel)"
+        name="subject"
+        type="text"
+        maxLength={200}
+        placeholder="Proje teklifi, iş birliği, ..."
+      />
 
-        <div>
-          <label
-            htmlFor="subject"
-            className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
-          >
-            Konu (opsiyonel)
-          </label>
-          <input
-            id="subject"
-            name="subject"
-            type="text"
-            maxLength={200}
-            placeholder="Proje teklifi, iş birliği, ..."
-            className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors"
-          />
-        </div>
+      <FieldTextarea
+        label="Mesaj"
+        name="message"
+        required
+        minLength={10}
+        maxLength={5000}
+        placeholder="Mesajınız..."
+        rows={6}
+      />
 
-        <div>
-          <label
-            htmlFor="message"
-            className="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2"
-          >
-            Mesaj
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            rows={6}
-            required
-            minLength={10}
-            maxLength={5000}
-            placeholder="Mesajınız..."
-            className="w-full bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none transition-colors resize-y"
-          />
-        </div>
-
-        <div className="flex items-center justify-between pt-2">
-          <p className="font-mono text-[10px] text-muted-foreground">
-            {`> ready to transmit`}
-          </p>
-          <button
-            type="submit"
-            disabled={pending}
-            className="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-foreground text-background hover:bg-[var(--accent)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {pending ? "Gönderiliyor..." : "Gönder →"}
-          </button>
-        </div>
-
-        {msg && (
-          <div
-            className={`text-sm font-mono px-4 py-3 border ${
-              msg.type === "success"
-                ? "border-emerald-500/50 text-emerald-400 bg-emerald-500/5"
-                : msg.type === "warning"
-                  ? "border-yellow-500/50 text-yellow-400 bg-yellow-500/5"
-                  : "border-[var(--accent)]/50 text-[var(--accent)] bg-[var(--accent)]/5"
-            }`}
-          >
-            {msg.type === "success" ? "✓ " : msg.type === "warning" ? "⚠ " : "✕ "}
-            {msg.text}
-          </div>
-        )}
+      <div className="flex items-center justify-between border-t border-black pt-6">
+        <span className="font-mono text-xs uppercase tracking-widest text-black/40">
+          → submit
+        </span>
+        <button
+          type="submit"
+          disabled={pending}
+          className="btn btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {pending ? "Gönderiliyor…" : "Gönder →"}
+        </button>
       </div>
+
+      {msg && (
+        <div
+          className={`text-sm font-mono border-l-2 pl-3 py-2 ${
+            msg.type === "success"
+              ? "border-black text-black bg-black/5"
+              : msg.type === "warning"
+                ? "border-black text-black bg-black/5"
+                : "border-[#e63946] text-[#e63946] bg-[#e63946]/5"
+          }`}
+        >
+          {msg.type === "success" ? "✓ " : msg.type === "warning" ? "⚠ " : "✕ "}
+          {msg.text}
+        </div>
+      )}
     </form>
+  );
+}
+
+function Field({
+  label,
+  ...props
+}: {
+  label: string;
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div>
+      <label
+        htmlFor={props.name}
+        className="label block mb-2"
+      >
+        {label}
+      </label>
+      <input
+        id={props.name}
+        {...props}
+        className="w-full bg-white border-0 border-b-2 border-black px-0 py-3 font-display text-lg focus:outline-none focus:border-[#e63946] transition-colors placeholder:text-black/30"
+      />
+    </div>
+  );
+}
+
+function FieldTextarea({
+  label,
+  ...props
+}: {
+  label: string;
+} & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return (
+    <div>
+      <label
+        htmlFor={props.name}
+        className="label block mb-2"
+      >
+        {label}
+      </label>
+      <textarea
+        id={props.name}
+        {...props}
+        className="w-full bg-white border-0 border-b-2 border-black px-0 py-3 font-display text-lg focus:outline-none focus:border-[#e63946] transition-colors resize-none placeholder:text-black/30"
+      />
+    </div>
   );
 }
 
@@ -168,49 +166,53 @@ function NewsletterForm() {
   const [msg, setMsg] = useState<string | null>(null);
 
   return (
-    <div className="border border-foreground/15 p-6 sm:p-8 text-center">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-        Newsletter
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-4 pt-8 border-t border-black/10">
+      <div className="lg:col-span-2">
+        <div className="label">Newsletter</div>
       </div>
-      <h3 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight mb-3">
-        Bültene abone ol
-      </h3>
-      <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-        Yeni yazılardan haberdar olmak için e-posta adresini bırak.
-      </p>
-      <form
-        action={(fd) =>
-          start(async () => {
-            const res = await subscribeNewsletter(fd);
-            if (res.ok) {
-              setMsg(res.message ?? "Abone olundu");
-              toast.success(res.message ?? "Abone olundu");
-            } else {
-              setMsg(res.error ?? "Bir hata oluştu");
-              toast.error(res.error ?? "Hata");
-            }
-          })
-        }
-        className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-      >
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="ornek@mail.com"
-          className="flex-1 bg-background border border-foreground/20 px-4 py-3 font-mono text-sm focus:border-foreground focus:outline-none"
-        />
-        <button
-          type="submit"
-          disabled={pending}
-          className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-foreground hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+      <div className="lg:col-span-10">
+        <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-2">
+          Bültene abone ol.
+        </h3>
+        <p className="text-sm text-black/60 mb-6">
+          Yeni yazılardan haberdar olmak için e-posta adresini bırak.
+        </p>
+        <form
+          action={(fd) =>
+            start(async () => {
+              const res = await subscribeNewsletter(fd);
+              if (res.ok) {
+                setMsg(res.message ?? "Abone olundu");
+                toast.success(res.message ?? "Abone olundu");
+              } else {
+                setMsg(res.error ?? "Bir hata oluştu");
+                toast.error(res.error ?? "Hata");
+              }
+            })
+          }
+          className="flex flex-col sm:flex-row gap-0 sm:gap-3 border-b-2 border-black"
         >
-          {pending ? "..." : "Abone Ol →"}
-        </button>
-      </form>
-      {msg && (
-        <p className="mt-3 text-xs font-mono text-muted-foreground">{msg}</p>
-      )}
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="ornek@mail.com"
+            className="flex-1 bg-white border-0 px-0 py-3 font-display text-lg focus:outline-none placeholder:text-black/30"
+          />
+          <button
+            type="submit"
+            disabled={pending}
+            className="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-black text-white hover:bg-[#e63946] transition-colors disabled:opacity-40"
+          >
+            {pending ? "..." : "Abone Ol →"}
+          </button>
+        </form>
+        {msg && (
+          <p className="mt-3 text-xs font-mono text-black/60 uppercase tracking-widest">
+            {msg}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

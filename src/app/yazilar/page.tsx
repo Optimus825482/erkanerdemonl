@@ -1,11 +1,11 @@
 import { getPublishedArticles } from "@/lib/queries";
 import type { Metadata } from "next";
-import ContentCard from "@/components/ContentCard";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Yazılar — Erkan Erdem",
+  title: "Writing — Erkan Erdem",
   description: "Teknoloji, yazılım, yapay zeka ve daha birçok konuda yazılarım.",
 };
 
@@ -21,94 +21,94 @@ function getTags(raw: unknown): string[] {
   return raw.filter((t): t is string => typeof t === "string");
 }
 
-interface BentoItem {
-  id: number;
-  className: string;
-}
-
-function getBentoLayout(count: number): BentoItem[] {
-  const items: BentoItem[] = [];
-  for (let i = 0; i < count; i++) {
-    if (i === 0) {
-      items.push({ id: i, className: "sm:col-span-2 sm:row-span-2" });
-    } else if (i === 1 || i === 2) {
-      items.push({ id: i, className: "sm:col-span-2 lg:col-span-1" });
-    } else {
-      items.push({ id: i, className: "" });
-    }
-  }
-  return items;
-}
-
 export default async function YazilarPage() {
   const articles = await getPublishedArticles();
-  const layout = getBentoLayout(articles.length);
 
   return (
-    <div className="min-h-screen">
-      <section className="section">
-        <div className="container">
-          {/* Başlık */}
-          <div className="reveal mb-12 sm:mb-20">
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                02
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                /
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest">
-                Articles
-              </span>
-            </div>
-            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter mb-8 max-w-4xl">
-              Yazılar.
+    <section className="section">
+      <div className="container">
+        {/* Top meta */}
+        <div className="flex items-center justify-between font-mono text-xs uppercase tracking-widest text-black/50 mb-12">
+          <span>
+            <span className="inline-block w-2 h-2 bg-[#e63946] mr-2 align-middle" />
+            03 — Writing
+          </span>
+          <span>{articles.length} articles</span>
+        </div>
+
+        {/* Title */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-8 mb-12">
+          <div className="lg:col-span-2">
+            <div className="label">Yazılar</div>
+          </div>
+          <div className="lg:col-span-10">
+            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[8rem] xl:text-[9rem] font-extrabold tracking-[-0.04em] leading-[0.9]">
+              Writing.
             </h1>
-            <p className="font-display text-xl sm:text-2xl text-muted-foreground leading-relaxed max-w-3xl">
+            <p className="font-display text-xl sm:text-2xl text-black/70 leading-[1.15] max-w-3xl mt-6">
               Teknoloji, yazılım geliştirme, yapay zeka ve daha birçok konuda
               deneyimlerim ve düşüncelerim.
             </p>
           </div>
-
-          {/* Bento Grid */}
-          {articles.length === 0 ? (
-            <div className="reveal border border-foreground/15 p-12 text-center">
-              <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-                Empty
-              </div>
-              <p className="text-muted-foreground">
-                Henüz yayınlanmış yazı bulunmuyor.
-              </p>
-            </div>
-          ) : (
-            <div
-              className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
-              style={{ gridAutoRows: "minmax(220px, auto)" }}
-            >
-              {articles.map((a, i) => {
-                const item = layout[i];
-                if (!item) return null;
-                const isFeatured = i === 0;
-                return (
-                  <div key={a.id} className={item.className}>
-                    <ContentCard
-                      index={`${String(i + 1).padStart(2, "0")}`}
-                      category={a.category}
-                      title={a.title}
-                      description={isFeatured ? a.content.slice(0, 240) + "..." : a.excerpt}
-                      date={formatDate(a.publishedAt)}
-                      tags={getTags(a.tags)}
-                      thumbnail={a.thumbnailImage}
-                      href={`/yazilar/${a.slug}`}
-                      featured={isFeatured}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          )}
         </div>
-      </section>
-    </div>
+
+        <div className="hairline" />
+
+        {/* List — Swiss editorial table */}
+        {articles.length === 0 ? (
+          <div className="py-24 text-center">
+            <p className="label">Empty</p>
+            <p className="text-black/60 mt-2">
+              Henüz yayınlanmış yazı bulunmuyor.
+            </p>
+          </div>
+        ) : (
+          <div className="border-y border-black">
+            {articles.map((a) => (
+              <Link
+                key={a.id}
+                href={`/yazilar/${a.slug}`}
+                className="grid grid-cols-12 gap-3 sm:gap-4 px-4 sm:px-6 py-6 group hover:bg-black hover:text-white transition-colors border-b border-black/10 last:border-b-0"
+              >
+                <div className="col-span-2 sm:col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40 self-start pt-1">
+                  {String(a.id).padStart(2, "0")}
+                </div>
+                <div className="col-span-10 sm:col-span-2 self-start pt-1">
+                  <span className="tag tag-muted group-hover:border-white group-hover:text-white/60">
+                    {a.category}
+                  </span>
+                </div>
+                <div className="col-span-12 sm:col-span-6 order-3 sm:order-none">
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-[-0.03em] leading-[1.05]">
+                    {a.title}
+                  </h2>
+                  <p className="text-sm text-black/60 group-hover:text-white/60 mt-2 line-clamp-2 max-w-2xl">
+                    {a.excerpt}
+                  </p>
+                  {getTags(a.tags).length > 0 && (
+                    <div className="hidden sm:flex flex-wrap gap-1.5 mt-3">
+                      {getTags(a.tags).slice(0, 4).map((t) => (
+                        <span
+                          key={t}
+                          className="font-mono text-[10px] uppercase tracking-wider text-black/50 group-hover:text-white/40"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="col-span-6 sm:col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-start pt-1">
+                  {formatDate(a.publishedAt)}
+                </div>
+                <div className="col-span-6 sm:col-span-1 font-mono text-xs text-black group-hover:text-white self-start pt-1 text-right">
+                  →
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

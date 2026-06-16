@@ -1,67 +1,44 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 /* ========================================
-   DESIGN TOKENS — Editorial Brutalist
+   SWISS DESIGN — International Typographic Style
    ======================================== */
 :root {
-  /* Brand */
-  --accent: #ff4d2e;
+  /* Color system — pure, restrained, sharp */
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --muted: #f5f5f5;
+  --muted-foreground: #6b6b6b;
+  --card: #ffffff;
+  --border: #0a0a0a;
+  --input: #0a0a0a;
+
+  /* The ONE accent — Helvetica red */
+  --accent: #e63946;
   --accent-foreground: #ffffff;
 
-  /* Surfaces — charcoal (koyu gri-siyah) */
-  --background: #1a1a1a;
-  --foreground: #fafaf9;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --card: #1f1f1f;
-  --card-foreground: #fafaf9;
-  --border: #fafaf9;
-  --input: #fafaf9;
-  --ring: #ff4d2e;
-
-  /* Accent variants */
-  --primary: #fafaf9;
-  --primary-foreground: #1a1a1a;
-  --secondary: #262626;
-  --secondary-foreground: #fafaf9;
-  --accent-soft: #3a1d14;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --destructive: #ef4444;
-
-  /* Typography */
-  --font-display: "Geist", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Geist Mono", monospace;
-  --font-body: "Geist", system-ui, sans-serif;
-
-  /* Spacing */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2.5rem;
-  --space-xl: 4rem;
-  --space-2xl: 6rem;
+  /* Typographic */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", monospace;
+  --font-display: "Inter", system-ui, sans-serif;
 
   /* Layout */
-  --container: 1280px;
-  --container-narrow: 768px;
+  --container: 1440px;
+  --grid-gap: 1px; /* Hairline grid */
+  --grid-cols: 12;
 }
 
 .dark {
   --background: #0a0a0a;
-  --foreground: #fafaf9;
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
-  --card: #18181b;
-  --card-foreground: #fafaf9;
-  --border: #fafaf9;
-  --input: #fafaf9;
-  --primary: #fafaf9;
-  --primary-foreground: #0a0a0a;
-  --secondary: #27272a;
-  --secondary-foreground: #fafaf9;
-  --accent-soft: #3a1d14;
+  --foreground: #fafafa;
+  --muted: #181818;
+  --muted-foreground: #a3a3a3;
+  --card: #0a0a0a;
+  --border: #fafafa;
+  --input: #fafafa;
+  --accent: #ff5a67;
+  --accent-foreground: #0a0a0a;
 }
 
 * {
@@ -75,14 +52,15 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   background: var(--background);
   color: var(--foreground);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   font-feature-settings: "ss01", "cv11";
   min-height: 100vh;
   overflow-x: hidden;
@@ -94,134 +72,137 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--muted);
+  background: var(--background);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--foreground);
 }
 
-/* ========================================
-   TYPOGRAPHY
-   ======================================== */
-.font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
-.font-mono { font-family: var(--font-mono); letter-spacing: -0.01em; }
-.font-body { font-family: var(--font-body); }
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    scrollbar-width: none;
+  }
+}
 
-h1, h2, h3, h4 {
+/* ========================================
+   TYPOGRAPHY — Swiss scale
+   ======================================== */
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  color: var(--foreground);
   text-wrap: balance;
 }
 
-h1 { font-size: clamp(2.5rem, 6vw + 1rem, 5.5rem); font-weight: 700; }
-h2 { font-size: clamp(1.875rem, 3vw + 1rem, 3.25rem); }
-h3 { font-size: clamp(1.375rem, 1.5vw + 0.875rem, 1.875rem); }
-
-p { line-height: 1.7; text-wrap: pretty; }
-
-/* ========================================
-   CANVAS LAYERS — subtle
-   ======================================== */
-#three-canvas,
-#matrix-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.3;
+h1 {
+  font-size: clamp(3rem, 8vw + 1rem, 9rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
-.scanlines {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1000;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.015),
-    rgba(255, 255, 255, 0.015) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+h2 {
+  font-size: clamp(1.875rem, 3vw + 1rem, 3.5rem);
+  letter-spacing: -0.035em;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 1.5vw + 0.5rem, 1.75rem);
+  letter-spacing: -0.02em;
+}
+
+p {
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  font-feature-settings: "tnum";
 }
 
 /* ========================================
-   DECORATIVE PATTERNS
+   GRID SYSTEM
    ======================================== */
-.dot-grid {
-  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-  background-size: 24px 24px;
+.container {
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.5rem, 4vw, 3rem);
+  padding-right: clamp(1.5rem, 4vw, 3rem);
 }
 
-.hard-line {
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0;
+}
+
+/* Hairline divider */
+.hairline {
   height: 1px;
   background: var(--border);
   width: 100%;
 }
 
-.hard-line-vertical {
+.hairline-v {
   width: 1px;
   background: var(--border);
   height: 100%;
 }
 
 /* ========================================
-   ANIMATIONS — refined
+   SECTIONS
+   ======================================== */
+.section {
+  position: relative;
+  padding-top: clamp(4rem, 8vh, 6rem);
+  padding-bottom: clamp(4rem, 8vh, 6rem);
+}
+
+/* ========================================
+   ANIMATIONS — restrained
    ======================================== */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-up { animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-.float { animation: float 4s ease-in-out infinite; }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-.pulse { animation: pulse 2s ease-in-out infinite; }
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-.blink { animation: blink 0.8s step-end infinite; }
+.fade-up { animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
 
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal.active { opacity: 1; transform: translateY(0); }
 
 .reveal-stagger > * {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(12px);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal-stagger.active > * { opacity: 1; transform: translateY(0); }
 .reveal-stagger.active > *:nth-child(1) { transition-delay: 0s; }
-.reveal-stagger.active > *:nth-child(2) { transition-delay: 0.1s; }
-.reveal-stagger.active > *:nth-child(3) { transition-delay: 0.2s; }
-.reveal-stagger.active > *:nth-child(4) { transition-delay: 0.3s; }
-.reveal-stagger.active > *:nth-child(5) { transition-delay: 0.4s; }
-.reveal-stagger.active > *:nth-child(6) { transition-delay: 0.5s; }
+.reveal-stagger.active > *:nth-child(2) { transition-delay: 0.05s; }
+.reveal-stagger.active > *:nth-child(3) { transition-delay: 0.1s; }
+.reveal-stagger.active > *:nth-child(4) { transition-delay: 0.15s; }
+.reveal-stagger.active > *:nth-child(5) { transition-delay: 0.2s; }
+.reveal-stagger.active > *:nth-child(6) { transition-delay: 0.25s; }
+.reveal-stagger.active > *:nth-child(7) { transition-delay: 0.3s; }
+.reveal-stagger.active > *:nth-child(8) { transition-delay: 0.35s; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -232,56 +213,116 @@ p { line-height: 1.7; text-wrap: pretty; }
 }
 
 /* ========================================
-   LAYOUT
+   BUTTONS
    ======================================== */
-.container {
-  max-width: var(--container);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(1rem, 4vw, 2.5rem);
-  padding-right: clamp(1rem, 4vw, 2.5rem);
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--foreground);
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
 }
 
-.container-narrow {
-  max-width: var(--container-narrow);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(1rem, 4vw, 2.5rem);
-  padding-right: clamp(1rem, 4vw, 2.5rem);
+.btn:hover {
+  background: var(--foreground);
+  color: var(--background);
 }
 
-.section {
-  position: relative;
-  z-index: 10;
-  padding-top: clamp(4rem, 10vh, 7rem);
-  padding-bottom: clamp(4rem, 10vh, 7rem);
+.btn-primary {
+  background: var(--foreground);
+  color: var(--background);
 }
 
-.section-tight {
-  padding-top: clamp(3rem, 6vh, 5rem);
-  padding-bottom: clamp(3rem, 6vh, 5rem);
+.btn-primary:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent);
+}
+
+.btn-accent:hover {
+  background: var(--foreground);
+  color: var(--background);
+  border-color: var(--foreground);
 }
 
 /* ========================================
-   LEGACY ALIASES
+   TAGS
    ======================================== */
+.tag {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  background: transparent;
+}
+
+.tag-accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.tag-muted {
+  color: var(--muted-foreground);
+  border-color: var(--muted-foreground);
+}
+
+/* ========================================
+   NUMBERED LABELS (editorial)
+   ======================================== */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
+}
+
+/* ========================================
+   LEGACY (eski bileşenler için)
+   ======================================== */
+.scanlines,
+.matrix-canvas,
+#three-canvas,
+#matrix-canvas,
 .glass,
 .glass-strong,
 .hud-line,
 .hud-corner,
+.neon-glow-cyan,
+.neon-glow-magenta,
+.neon-glow-green,
 .glow-cyan,
-.tag-cyan,
-.tag-magenta,
-.tag-green,
-.tag-yellow,
-.card-hover,
 .cyber-btn,
 .cyber-card,
 .cyber-glass,
 .cyber-glass-light,
 .cyber-heading,
-.reveal,
-.reveal-stagger {
-  /* yeni tasarıma uyumsuz, gerektiğinde yeniden yaz */
-  all: revert;
+.cyber-button,
+.cyber-badge,
+.cyber-border,
+.cyber-frame,
+.cyber-text,
+.cyber-panel,
+.glitch {
+  display: none !important;
 }

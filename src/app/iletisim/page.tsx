@@ -5,117 +5,157 @@ import ContactSection from "@/components/ContactSection";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "İletişim — Erkan Erdem",
+  title: "Contact — Erkan Erdem",
   description: "Bana ulaşın. Projeler, iş birliği veya sadece merhaba.",
 };
 
-const FAQ_CARDS = [
-  {
-    color: "cyan",
-    text: "text-cyan-400",
-    dot: "bg-cyan-400",
-  },
-  {
-    color: "magenta",
-    text: "text-[var(--accent)]",
-    dot: "bg-[var(--accent)]",
-  },
-  {
-    color: "green",
-    text: "text-emerald-400",
-    dot: "bg-emerald-400",
-  },
-  {
-    color: "yellow",
-    text: "text-yellow-400",
-    dot: "bg-yellow-400",
-  },
-];
+const COLORS = ["text-[#e63946]", "text-black"];
+const DOTS = ["bg-[#e63946]", "bg-black"];
 
 export default async function IletisimPage() {
-  const [faqs] = await Promise.all([
+  const [faqs, about] = await Promise.all([
     getPublishedFAQs(),
     getAbout(),
   ]);
 
   return (
-    <div className="min-h-screen">
-      <section className="section">
-        <div className="container">
-          {/* Başlık */}
-          <div className="reveal mb-12 sm:mb-20">
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                04
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                /
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest">
-                Contact
-              </span>
-            </div>
-            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter mb-8 max-w-4xl">
-              İletişim.
+    <section className="section">
+      <div className="container">
+        {/* Top meta */}
+        <div className="flex items-center justify-between font-mono text-xs uppercase tracking-widest text-black/50 mb-12">
+          <span>
+            <span className="inline-block w-2 h-2 bg-[#e63946] mr-2 align-middle" />
+            04 — Contact
+          </span>
+          <span>Reply within 24h</span>
+        </div>
+
+        {/* Title */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-8 mb-16">
+          <div className="lg:col-span-2">
+            <div className="label">İletişim</div>
+          </div>
+          <div className="lg:col-span-10">
+            <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[8rem] xl:text-[9rem] font-extrabold tracking-[-0.04em] leading-[0.9]">
+              Contact.
             </h1>
-            <p className="font-display text-xl sm:text-2xl text-muted-foreground leading-relaxed max-w-3xl">
-              Projeler hakkında konuşmak, iş birliği yapmak veya sadece merhaba
-              demek için aşağıdaki formu kullanabilirsiniz.
+            <p className="font-display text-xl sm:text-2xl text-black/70 leading-[1.15] max-w-3xl mt-6">
+              Projeler, iş birliği veya sadece merhaba — aşağıdaki formu
+              kullanabilirsiniz.
             </p>
           </div>
+        </div>
 
-          {/* İletişim formu */}
-          <div className="reveal mb-20 sm:mb-24 max-w-3xl">
-            <ContactSection />
-          </div>
+        <div className="hairline" />
 
-          {/* SSS */}
-          {faqs.length > 0 && (
-            <div className="reveal">
-              <div className="flex items-baseline gap-3 mb-10 pb-4 border-b border-foreground/10">
-                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                  05
-                </span>
-                <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                  /
-                </span>
-                <span className="font-mono text-xs uppercase tracking-widest">
-                  FAQ
-                </span>
-              </div>
-
-              <div className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6">
-                {faqs.map((f: { id: number; question: string; answer: string; colorTheme: string }) => {
-                  const idx = Math.abs(f.id) % FAQ_CARDS.length;
-                  const card = FAQ_CARDS[idx] ?? FAQ_CARDS[0]!;
-                  return (
-                    <div
-                      key={f.id}
-                      className="border border-foreground/15 p-6 hover:border-foreground transition-colors"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span
-                          className={`mt-1.5 inline-block w-2 h-2 rounded-full ${card.dot} pulse`}
-                        />
-                        <div>
-                          <h3
-                            className={`font-display text-lg font-semibold tracking-tight mb-2 ${card.text}`}
-                          >
-                            {f.question}
-                          </h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {f.answer}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+        {/* Form */}
+        <div className="py-12 lg:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-8">
+            <div className="lg:col-span-2">
+              <div className="label">[A] Form</div>
+            </div>
+            <div className="lg:col-span-7">
+              <ContactSection />
+            </div>
+            <div className="lg:col-span-3">
+              <div className="space-y-8">
+                <div>
+                  <div className="label">Email</div>
+                  <a
+                    href="mailto:info@erkanerdem.online"
+                    className="block mt-2 text-lg font-medium hover:text-[#e63946] transition-colors break-all"
+                  >
+                    {about?.email ?? "info@erkanerdem.online"}
+                  </a>
+                </div>
+                <div>
+                  <div className="label">Location</div>
+                  <p className="mt-2 text-lg font-medium">
+                    {about?.location ?? "Türkiye"}
+                  </p>
+                </div>
+                <div>
+                  <div className="label">Social</div>
+                  <ul className="mt-2 space-y-1 font-mono text-sm">
+                    {about?.socialGithub && (
+                      <li>
+                        <a
+                          href={about.socialGithub}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#e63946] transition-colors"
+                        >
+                          GitHub ↗
+                        </a>
+                      </li>
+                    )}
+                    {about?.socialLinkedin && (
+                      <li>
+                        <a
+                          href={about.socialLinkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#e63946] transition-colors"
+                        >
+                          LinkedIn ↗
+                        </a>
+                      </li>
+                    )}
+                    {about?.socialTwitter && (
+                      <li>
+                        <a
+                          href={about.socialTwitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-[#e63946] transition-colors"
+                        >
+                          Twitter ↗
+                        </a>
+                      </li>
+                    )}
+                  </ul>
+                </div>
               </div>
             </div>
-          )}
+          </div>
         </div>
-      </section>
-    </div>
+
+        {faqs.length > 0 && (
+          <>
+            <div className="hairline" />
+            <div className="py-12 lg:py-16">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-8">
+                <div className="lg:col-span-2">
+                  <div className="label">[B] FAQ</div>
+                </div>
+                <div className="lg:col-span-10 divide-y divide-black/10">
+                  {faqs.map((f: { id: number; question: string; answer: string }, i: number) => {
+                    const color = COLORS[i % 2] ?? COLORS[0]!;
+                    return (
+                      <div
+                        key={f.id}
+                        className="grid grid-cols-12 gap-4 py-6 first:pt-0 last:pb-0"
+                      >
+                        <div className="col-span-1 font-mono text-xs text-black/40 self-start pt-2">
+                          {String(f.id).padStart(2, "0")}
+                        </div>
+                        <h3
+                          className={`col-span-11 sm:col-span-5 font-display text-xl sm:text-2xl font-semibold tracking-[-0.02em] ${color}`}
+                        >
+                          {f.question}
+                        </h3>
+                        <p className="col-span-12 sm:col-span-6 sm:col-start-7 text-base text-black/70 leading-[1.6]">
+                          {f.answer}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </section>
   );
 }

@@ -1,8 +1,5 @@
 import Link from "next/link";
 import { getAbout, getPublishedProjects } from "@/lib/queries";
-import SystemStatus from "@/components/SystemStatus";
-import MetricsWidget from "@/components/MetricsWidget";
-import TerminalBoot from "@/components/TerminalBoot";
 
 export const dynamic = "force-dynamic";
 
@@ -23,249 +20,190 @@ export default async function Home() {
       (t): t is string => typeof t === "string" && t.length > 0,
     ) ?? FALLBACK_TITLES;
 
-  const techCount = Array.isArray(about?.technologies)
-    ? (about!.technologies as unknown[]).filter(
-        (t): t is string => typeof t === "string",
-      ).length
-    : 0;
-  const tags = Array.isArray(about?.tags)
-    ? (about!.tags as unknown[]).filter(
-        (t): t is string => typeof t === "string",
-      )
-    : [];
-
-  const featured = projects[0];
-
   return (
     <>
-      {/* HERO + BENTO GRID */}
+      {/* HERO — Swiss editorial */}
       <section className="section">
         <div className="container">
-          {/* Top bar */}
-          <div className="reveal mb-12 sm:mb-16 flex items-center justify-between font-mono text-xs uppercase tracking-widest">
-            <span className="flex items-center gap-2">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 pulse" />
-              <span>Online</span>
+          {/* Top meta */}
+          <div className="flex items-center justify-between font-mono text-xs uppercase tracking-widest text-black/50 mb-12">
+            <span>
+              <span className="inline-block w-2 h-2 bg-[#e63946] mr-2 align-middle" />
+              Online — Istanbul, TR
             </span>
-            <span className="hidden md:inline text-muted-foreground">
-              Build · {new Date().toISOString().slice(0, 10)}
+            <span className="hidden sm:inline">
+              Portfolio · 2026
             </span>
-            <span className="text-muted-foreground">v1.0.0</span>
+            <span>v1.0</span>
           </div>
 
-          {/* Terminal boot */}
-          <div className="reveal mb-12 sm:mb-16 max-w-2xl">
-            <div className="border border-foreground/15 bg-background/50 backdrop-blur-sm p-5">
-              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-foreground/10">
-                <span className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
-                <span className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
-                <span className="w-2.5 h-2.5 rounded-full bg-foreground/20" />
-                <span className="ml-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                  ~/erkanerdem — boot
-                </span>
-              </div>
-              <TerminalBoot
-                lines={[
-                  "init identity.core",
-                  "loading experience.dev",
-                  "mounting skills.fullstack",
-                  "activating ai.engine",
-                  "ready",
-                ]}
-              />
+          {/* Hero — asymmetric 12-col grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12 mb-24">
+            {/* Index label — col 1 */}
+            <div className="lg:col-span-2">
+              <div className="label">[00] Index</div>
+            </div>
+
+            {/* Main hero — col 7-12 */}
+            <div className="lg:col-span-10">
+              <h1 className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-[8rem] xl:text-[9rem] font-extrabold tracking-[-0.04em] leading-[0.9] mb-8">
+                {about?.fullName ?? "Erkan Erdem"}
+              </h1>
+              <p className="font-display text-xl sm:text-2xl md:text-3xl text-black/70 leading-[1.15] max-w-3xl text-balance">
+                {about?.shortBio ??
+                  "Veteriner hekimlik mesleğimi icra ederken, teknoloji ve yazılım dünyasında Full Stack Developer olarak projeler geliştiriyorum."}
+              </p>
             </div>
           </div>
 
-          {/* BENTO GRID — 6 cell, asymmetric */}
-          <div className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-5">
-            {/* 01: HERO CELL — col-span-2 row-span-2 */}
-            <div className="lg:col-span-4 lg:row-span-2 border border-foreground/15 p-8 sm:p-10 flex flex-col justify-between">
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3">
-                  [01] — Hakkımda
-                </div>
-                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-bold tracking-tighter mb-6 leading-[0.95]">
-                  {about?.fullName ?? "Erkan Erdem"}
-                </h1>
-                <div className="h-px w-20 bg-foreground my-6" />
-                <p className="font-display text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-xl">
-                  {about?.shortBio ??
-                    "Veteriner hekimlik mesleğimi icra ederken, teknoloji ve yazılım dünyasında Full Stack Developer olarak projeler geliştiriyorum."}
-                </p>
-              </div>
-
-              <div className="space-y-2 mt-8">
-                {heroTitles.slice(0, 3).map((title, i) => (
-                  <p
+          {/* Hero titles + CTAs */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 gap-y-12 mb-16">
+            <div className="lg:col-span-2">
+              <div className="label">[01] Roles</div>
+            </div>
+            <div className="lg:col-span-7">
+              <ul className="space-y-3">
+                {heroTitles.map((title, i) => (
+                  <li
                     key={i}
-                    className="font-mono text-sm sm:text-base text-muted-foreground"
+                    className="font-mono text-sm sm:text-base text-black flex items-baseline gap-3"
                   >
-                    <span className="text-[var(--accent)] mr-3">→</span>
-                    {title}
-                  </p>
+                    <span className="text-black/30 w-8 shrink-0">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span>{title}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
+            </div>
+            <div className="lg:col-span-3 flex flex-col gap-3">
+              <Link
+                href="/hakkimda"
+                className="btn btn-primary justify-center w-full"
+              >
+                About me →
+              </Link>
+              <Link
+                href="/projeler"
+                className="btn justify-center w-full"
+              >
+                View work →
+              </Link>
+            </div>
+          </div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
-                <Link
-                  href="/hakkimda"
-                  className="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-foreground text-background hover:bg-[var(--accent)] transition-colors text-center"
-                >
-                  Hakkımda →
-                </Link>
+          <div className="hairline" />
+
+          {/* Metrics bar — 4-col */}
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-black/10">
+            <div className="py-6 px-4 first:pl-0">
+              <div className="label">Projects</div>
+              <div className="font-display text-3xl sm:text-4xl font-bold mt-2">
+                {String(projects.length).padStart(2, "0")}
+              </div>
+            </div>
+            <div className="py-6 px-4">
+              <div className="label">Stack</div>
+              <div className="font-display text-3xl sm:text-4xl font-bold mt-2">
+                12+
+              </div>
+            </div>
+            <div className="py-6 px-4">
+              <div className="label">Years</div>
+              <div className="font-display text-3xl sm:text-4xl font-bold mt-2">
+                7+
+              </div>
+            </div>
+            <div className="py-6 px-4 last:pr-0">
+              <div className="label">Status</div>
+              <div className="font-display text-3xl sm:text-4xl font-bold mt-2 flex items-baseline gap-2">
+                <span className="inline-block w-2 h-2 bg-[#e63946] rounded-full" />
+                Open
+              </div>
+            </div>
+          </div>
+
+          <div className="hairline" />
+        </div>
+      </section>
+
+      {/* RECENT WORK */}
+      {projects.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 mb-12">
+              <div className="lg:col-span-2">
+                <div className="label">[02] Work</div>
+              </div>
+              <div className="lg:col-span-10 flex justify-between items-end">
+                <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold tracking-[-0.04em] leading-[1]">
+                  Recent projects.
+                </h2>
                 <Link
                   href="/projeler"
-                  className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-foreground hover:bg-foreground hover:text-background transition-colors text-center"
+                  className="label hover:text-[#e63946] transition-colors hidden sm:inline"
                 >
-                  Projeler →
+                  All →
                 </Link>
               </div>
             </div>
 
-            {/* 02: METRICS — col-span-2 */}
-            <div className="lg:col-span-2 border border-foreground/15 p-6 flex flex-col">
-              <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
-                [02] — Metrics
-              </div>
-              <div className="grid grid-cols-2 gap-3 flex-1">
-                <MetricsWidget
-                  label="Projeler"
-                  value={projects.length}
-                  hint="yayında"
-                />
-                <MetricsWidget
-                  label="Stack"
-                  value={techCount}
-                  hint="teknoloji"
-                />
-                <MetricsWidget
-                  label="Etiket"
-                  value={tags.length}
-                  hint="alan"
-                />
-                <MetricsWidget
-                  label="Deneyim"
-                  value="7+"
-                  hint="yıl"
-                />
-              </div>
+            <div className="reveal-stagger divide-y divide-black/10 border-y border-black">
+              {projects.slice(0, 5).map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/projeler/${p.slug}`}
+                  className="grid grid-cols-12 gap-4 py-6 group hover:bg-black hover:text-white transition-colors"
+                >
+                  <div className="col-span-1 font-mono text-xs text-black/40 group-hover:text-white/40">
+                    {String(p.id).padStart(2, "0")}
+                  </div>
+                  <div className="col-span-1 tag tag-muted self-start group-hover:border-white group-hover:text-white/60">
+                    {p.category}
+                  </div>
+                  <div className="col-span-7 sm:col-span-6">
+                    <h3 className="font-display text-lg sm:text-xl font-semibold tracking-tight">
+                      {p.title}
+                    </h3>
+                    <p className="text-sm text-black/60 group-hover:text-white/60 mt-1 line-clamp-1">
+                      {p.description}
+                    </p>
+                  </div>
+                  <div className="hidden sm:block col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-center">
+                    {new Date(p.publishedAt).getFullYear()}
+                  </div>
+                  <div className="col-span-3 sm:col-span-2 font-mono text-xs text-black/40 group-hover:text-white/40 self-center text-right">
+                    View →
+                  </div>
+                </Link>
+              ))}
             </div>
+          </div>
+        </section>
+      )}
 
-            {/* 03: FEATURED PROJECT — col-span-2 */}
-            {featured && (
-              <Link
-                href={`/projeler/${featured.slug}`}
-                className="lg:col-span-2 group border border-foreground/15 hover:border-foreground p-6 transition-colors flex flex-col"
-              >
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-foreground/10">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    [03] — Featured
-                  </span>
-                  <span className="font-mono text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                    ↗
-                  </span>
-                </div>
-                <h3 className="font-display text-xl sm:text-2xl font-semibold tracking-tight mb-3 group-hover:text-[var(--accent)] transition-colors">
-                  {featured.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4 flex-1">
-                  {featured.description}
-                </p>
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-foreground/10">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-[var(--accent)]">
-                    {featured.category}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    Featured →
-                  </span>
-                </div>
-              </Link>
-            )}
-
-            {/* 04: SYSTEM STATUS — col-span-3 */}
-            <div className="lg:col-span-3 border border-foreground/15 p-6">
-              <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-4">
-                [04] — System
-              </div>
-              <SystemStatus />
+      {/* CONTACT CTA */}
+      <section className="section">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 items-end">
+            <div className="lg:col-span-8">
+              <div className="label mb-6">[03] Contact</div>
+              <h2 className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-[-0.04em] leading-[0.95]">
+                Birlikte{" "}
+                <span className="text-[#e63946]">çalışalım.</span>
+              </h2>
             </div>
-
-            {/* 05: CONTACT CTA — col-span-3 */}
-            <div className="lg:col-span-3 border border-foreground/15 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-              <div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                  [05] — Get in touch
-                </div>
-                <h3 className="font-display text-xl sm:text-2xl font-semibold tracking-tight">
-                  Birlikte çalışalım.
-                </h3>
-                <p className="text-sm text-muted-foreground mt-2 max-w-md">
-                  Projeler, iş birliği veya sadece merhaba — bana ulaşın.
-                </p>
-              </div>
+            <div className="lg:col-span-4 lg:text-right mt-6 lg:mt-0">
               <Link
                 href="/iletisim"
-                className="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-foreground text-background hover:bg-[var(--accent)] transition-colors whitespace-nowrap"
+                className="btn btn-accent justify-center w-full lg:w-auto"
               >
-                İletişim →
+                Get in touch →
               </Link>
             </div>
           </div>
         </div>
       </section>
-
-      {/* PROJECTS PREVIEW */}
-      {projects.length > 1 && (
-        <section className="section border-t border-foreground/10">
-          <div className="container">
-            <div className="reveal mb-12 sm:mb-16 flex items-baseline gap-3">
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                [06]
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                /
-              </span>
-              <span className="font-mono text-xs uppercase tracking-widest">
-                Recent
-              </span>
-            </div>
-
-            <div className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-              {projects.slice(1, 7).map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/projeler/${p.slug}`}
-                  className="group border border-foreground/15 hover:border-foreground p-5 sm:p-6 transition-colors flex flex-col"
-                >
-                  <div className="flex items-center justify-between mb-3 pb-3 border-b border-foreground/10">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {p.category}
-                    </span>
-                    <span className="font-mono text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                      ↗
-                    </span>
-                  </div>
-                  <h3 className="font-display text-lg font-semibold tracking-tight mb-2 group-hover:text-[var(--accent)] transition-colors">
-                    {p.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
-                    {p.description}
-                  </p>
-                </Link>
-              ))}
-            </div>
-
-            <div className="reveal text-center mt-12">
-              <Link
-                href="/projeler"
-                className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-foreground hover:bg-foreground hover:text-background transition-colors inline-block"
-              >
-                Tüm Projeler →
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
     </>
   );
 }
